@@ -1,0 +1,38 @@
+{
+    "name": "ticketarget/search-service",
+    "type": "project",
+    "description": "Search service (Symfony, hexagonal) — fuzzy + stemming event search over Elasticsearch.",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.5",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "elasticsearch/elasticsearch": "^8.15",
+        "symfony/console": "^8.1",
+        "symfony/dotenv": "^8.1",
+        "symfony/framework-bundle": "^8.1",
+        "symfony/runtime": "^8.1",
+        "symfony/yaml": "^8.1",
+        "ticketarget/logging": "@dev"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.0",
+        "symfony/phpunit-bridge": "^8.1"
+    },
+    "repositories": [
+        { "type": "path", "url": "../../libs/logging", "options": { "symlink": false } }
+    ],
+    "autoload": { "psr-4": { "App\\": "src/" } },
+    "autoload-dev": { "psr-4": { "App\\Tests\\": "tests/" } },
+    "scripts": {
+        "lint": ["phpstan analyse"],
+        "test": ["phpunit"]
+    },
+    "config": {
+        "allow-plugins": { "symfony/runtime": true },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

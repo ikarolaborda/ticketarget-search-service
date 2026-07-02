@@ -1,0 +1,14 @@
+search:
+    path: /search
+    controller: App\UI\Http\SearchController
+    methods: [GET]
+
+autocomplete:
+    path: /search/autocomplete
+    controller: App\UI\Http\AutocompleteController
+    methods: [GET]
+
+health:
+    path: /health
+    controller: App\UI\Http\HealthController
+    methods: [GET]

@@ -1,0 +1,42 @@
+parameters:
+    elasticsearch.hosts: '%env(ELASTICSEARCH_HOSTS)%'
+    elasticsearch.events_index: '%env(ELASTICSEARCH_EVENTS_INDEX)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Kernel.php'
+            - '../src/Domain/'
+
+    # HTTP controllers referenced by FQCN in routes need this tag so the kernel
+    # can fetch them from the container and inject action arguments.
+    App\UI\Http\:
+        resource: '../src/UI/Http/'
+        tags: ['controller.service_arguments']
+
+    # Domain value objects must not be auto-registered as services.
+    App\Domain\:
+        resource: '../src/Domain/'
+        exclude: '../src/Domain/'
+
+    # Elasticsearch client built from env, shared across the container.
+    Elastic\Elasticsearch\Client:
+        factory: ['App\Infrastructure\Elasticsearch\ClientFactory', 'create']
+        arguments:
+            $hosts: '%elasticsearch.hosts%'
+
+    # Hexagonal wiring: the domain port resolves to its Elasticsearch adapter.
+    App\Domain\Search\SearchEventsPort: '@App\Infrastructure\Elasticsearch\ElasticsearchEventSearch'
+
+    App\Infrastructure\Elasticsearch\ElasticsearchEventSearch:
+        arguments:
+            $index: '%elasticsearch.events_index%'
+
+    # Standardized PSR-3 logging via the shared package.
+    Psr\Log\LoggerInterface:
+        factory: ['App\Infrastructure\Logging\LoggerFactoryBridge', 'create']
